@@ -1,2 +1,59 @@
-1. 目前数据集有3960个数据（22种噁唑×15种芳基卤代烷×3种碱×4种配体，其中第7种噁唑参与的反应不纳入数据集中），且输入的数据未经归一化。  
-2. 读入时选取偶极矩（即含“dipole_moment”的列）以区分不同反应中加入的物质。
+##C-N偶联编程小记
+0. 本系列程序目的是复现2018年发布在Science的机器学习预测C-N偶联的文章的结果（原论文参见Ahneman, D. T.; Estrada, J. G.; Lin, S,;
+Dreher, S. D.; Doyle, A. G. *Science* **2018**, *360*, 186），同时根据Comment的思路，对原论文中采用的数据进行重新划分（Comment参见Chuang, K. V.; Keiser, M. J. *Science* **2018**, *362*, eaat8603）  
+1. 目前数据集有3960个数据（22种噁唑×15种芳基卤代烷×3种碱×4种配体，其中第7种噁唑参与的反应不纳入数据集中），且输入的数据未经标准化。程序会在运行过程中自动进行标准化，这样多层感知网络等机器学习模型方能正常运行。  
+2. 读入时选取偶极矩（即含“dipole_moment”的列）以区分不同反应中加入的物质，目前，本程序仅对芳香卤代烷和噁唑进行划分，若按芳香卤代烷划分，则具体划分如下：  
+**第一类卤代烷：**  
+|化学名|偶极矩|  
+|:---:|:---:|  
+|1-chloro-4-(trifluoromethyl)benzene|0.770806|  
+|1-bromo-4-(trifluoromethyl)benzene|0.754193|  
+|1-iodo-4-(trifluoromethyl)benzene|1.059432|  
+**第二类卤代烷：**  
+|化学名|偶极矩|  
+|:---:|:---:|  
+|1-chloro-4-methoxybenzene|2.894904|  
+|1-bromo-4-methoxybenzene|2.97534|  
+|1-iodo-4-methoxybenzene|2.775967|  
+|1-chloro-4-ethylbenzene|2.32974|  
+|1-bromo-4-ethylbenzene|2.410215|  
+|1-ethyl-4-iodobenzene|2.177715|  
+**第三类卤代烷：**  
+|化学名|偶极矩|  
+|:---:|:---:|  
+|2-chloropyridine|3.519084|  
+|2-bromopyridine|3.579429|  
+|2-iodopyridine|3.355629|  
+|3-chloropyridine|2.089781|  
+|3-bromopyridine|2.086875|  
+|3-iodopyridine|1.988625|  
+若按噁唑划分，则具体划分如下：  
+**第一类噁唑：**  
+|化学名|偶极矩|  
+|:---:|:---:|  
+|3,5-dimethylisoxazole|3.059464|  
+|3-methyl-5-phenylisoxazole|2.980515|  
+|5-methyl-3-(1H-pyrrol-1-yl)isoxazole|3.387206|  
+|5-methylisoxazole|3.203762|  
+|ethyl-3-methoxyisoxazole-5-carboxylate|3.44567|  
+|ethyl-3-methylisoxazole-5-carboxylate|4.695918|  
+|ethyl-5-methylisoxazole-3-carboxylate|4.848261|  
+|ethyl-5-methylisoxazole-4-carboxylate|3.973089|  
+|ethyl-isoxazole-3-carboxylate|2.516823|  
+|ethyl-isoxazole-4-carboxylate|2.703396|  
+|methyl-5-(furan-2-yl)isoxazole-3-carboxylate|3.85783|  
+|methyl-5-(thiophen-2-yl)isoxazole-3-carboxylate|3.719695|  
+|methyl-isoxazole-5-carboxylate|4.564313|  
+**第二类噁唑：**  
+|化学名|偶极矩|  
+|:---:|:---:|  
+|3-methylisoxazole|2.94125|  
+|3-phenylisoxazole|2.752454|  
+|4-phenylisoxazole|3.268545|  
+|5-(2,6-difluorophenyl)isoxazole|3.94018|  
+|5-phenylisoxazole|3.210447|  
+|benzo[c]isoxazole|3.198581|  
+|benzo[d]isoxazole|3.184221|  
+|N,N-dibenzylisoxazol-3-amine|3.036368|  
+|N,N-dibenzylisoxazol-5-amine|3.974105|  
+3. 尽管在分类程序中，笔者分别采用Dice距离和Tanimoto距离进行分类，但最终训练时，仅采用Dice距离，而不采用Tanimoto距离，因两者的分类大致相同，均能将芳基卤代烷、碱、配体正确区分，而噁唑分类的细微差异并不影响训练部分的结论
